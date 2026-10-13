@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Saad Life Tracker — Personal Discipline & Growth OS</title>
+
+    <!-- Strict Content Security Policy (Zero npm dependencies, hardened client-side) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src https://api.aladhan.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+    <!-- Modern Typography: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Dedicated Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- MOBILE TOP BAR (visible on screens <= 991px) -->
+        <header class="mobile-topbar" id="mobile-topbar">
+            <button class="mobile-menu-btn" id="btn-mobile-menu" aria-label="Open Navigation Menu">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+            <div class="mobile-brand">
+                <span class="mobile-brand-icon">⚡</span>
+                <span class="mobile-brand-title">Saad Life Tracker</span>
+            </div>
+            <div class="mobile-topbar-actions">
+                <button class="icon-btn theme-toggle-btn" id="btn-theme-mobile" title="Toggle Dark/Light Mode"
+                    aria-label="Toggle Theme">
+                    <span class="theme-icon-slot">🌙</span>
+                </button>
+                <button class="icon-btn" id="btn-lock-mobile" title="Lock App" aria-label="Lock App"
+                    style="display:none;">
+                    <span>🔒</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- BACKDROP FOR MOBILE SIDEBAR -->
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <!-- LEFT SIDEBAR NAVIGATION MENU -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-brand">
+                    <div class="brand-avatar">SL</div>
+                    <div class="brand-text-col">
+                        <span class="brand-name">Saad Life Tracker</span>
+                        <span class="brand-subtitle">Discipline & Momentum</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" id="btn-sidebar-close" aria-label="Close navigation menu">✕</button>
+            </div>
+
+            <!-- Gregorian & Hijri Date Badge in Sidebar -->
+            <div class="sidebar-dates-box">
+                <div class="date-line">
+                    <span class="date-icon">📅</span>
+                    <span id="txt-gregorian">Loading date...</span>
+                </div>
+                <div class="date-line hijri-line">
+                    <span class="date-icon">🌙</span>
+                    <span id="txt-hijri">Loading Hijri...</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <button class="nav-item active" data-tab="tab-dashboard">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-label">Dashboard</span>
+                </button>
+                <button class="nav-item" data-tab="tab-prayers">
+                    <span class="nav-icon">🕌</span>
+                    <span class="nav-label">5 Daily Prayers</span>
+                    <span class="nav-badge" id="nav-badge-prayers">0/5</span>
+                </button>
+                <button class="nav-item" data-tab="tab-academics">
+                    <span class="nav-icon">🎓</span>
+                    <span class="nav-label">University</span>
+                    <span class="nav-badge" id="nav-badge-assign">0</span>
+                </button>
+                <button class="nav-item" data-tab="tab-learning">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-label">Focus & Books</span>
+                </button>
+                <button class="nav-item" data-tab="tab-gym">
+                    <span class="nav-icon">🏋️</span>
+                    <span class="nav-label">Gym & Overload</span>
+                </button>
+                <button class="nav-item" data-tab="tab-nutrition">
+                    <span class="nav-icon">🥗</span>
+                    <span class="nav-label">Nutrition & Water</span>
+                </button>
+                <button class="nav-item" data-tab="tab-tasks">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Daily Habits</span>
+                    <span class="nav-badge" id="nav-badge-habits">0/0</span>
+                </button>
+                <button class="nav-item" data-tab="tab-vault">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-label">Private Vault</span>
+                </button>
+                <button class="nav-item" data-tab="tab-backup">
+                    <span class="nav-icon">💾</span>
+                    <span class="nav-label">Backup & Security</span>
+                </button>
+            </nav>
+
+            <!-- Sidebar Bottom Quick Stats & Theme Toggle -->
+            <div class="sidebar-bottom">
+                <div class="sidebar-quick-stats">
+                    <div class="quick-stat-card">
+                        <span class="stat-label">STREAK</span>
+                        <span class="stat-value" id="sidebar-stat-streak">0 Days</span>
+                    </div>
+                    <div class="quick-stat-card">
+                        <span class="stat-label">DISCIPLINE</span>
+                        <span class="stat-value" id="sidebar-stat-discipline">0%</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-controls">
+                    <button class="theme-toggle-full-btn" id="btn-theme-sidebar">
+                        <span class="theme-icon-slot">🌙</span>
+                        <span id="txt-theme-mode">Switch to Dark</span>
+                    </button>
+                    <button class="btn-lock-sidebar" id="btn-lock-sidebar" style="display:none;">
+                        <span>🔒 Lock App</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN APP CONTENT AREA -->
+        <main class="app-main" id="app-main">
+
+            <!-- DESKTOP TOP HEADER -->
+            <header class="desktop-topbar">
+                <div class="topbar-headings">
+                    <h1 class="page-title" id="page-active-title">⚡ Master Dashboard</h1>
+                    <p class="page-subtitle" id="page-active-desc">Daily discipline index and habit momentum</p>
+                </div>
+                <div class="topbar-stats-group">
+                    <div class="stat-pill">
+                        <span class="stat-pill-icon">🔥</span>
+                        <div class="stat-pill-text">
+                            <span class="stat-pill-label">Streak</span>
+                            <span class="stat-pill-number" id="stat-streak">0 Days</span>
+                        </div>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-pill-icon">⚡</span>
+                        <div class="stat-pill-text">
+                            <span class="stat-pill-label">Discipline</span>
+                            <span class="stat-pill-number" id="stat-discipline">0%</span>
+                        </div>
+                    </div>
+                    <button class="icon-btn theme-toggle-btn" id="btn-theme-desktop" title="Toggle Dark/Light Mode"
+                        aria-label="Toggle Theme">
+                        <span class="theme-icon-slot">🌙</span>
+                    </button>
+                    <button class="icon-btn" id="btn-lock-desktop" title="Lock App with PIN" aria-label="Lock App"
+                        style="display:none;">
+                        <span>🔒</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="main-inner-container">
+
+                <!-- ======================================================== -->
+                <!-- VIEW 1: MASTER DASHBOARD                                 -->
+                <!-- ======================================================== -->
+                <section id="tab-dashboard" class="view-panel active-panel">
+                    <div class="discipline-hero card">
+                        <div class="hero-content">
+                            <span class="badge badge-emerald">TODAY'S MOMENTUM</span>
+                            <h2 class="hero-title">Daily Check & Balance</h2>
+                            <p class="hero-quote">
+                                "We are what we repeatedly do. Excellence, then, is not an act, but a habit."
+                            </p>
+                        </div>
+                        <div class="discipline-dial" id="hero-dial">
+                            <div class="discipline-dial-inner">
+                                <div id="hero-score-val">0%</div>
+                                <span>Locked In</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <!-- Prayers Glance -->
+                        <div class="card glance-card">
+                            <div class="card-header">
+                                <span class="card-title">🕌 Prayer Status</span>
+                                <span id="dash-prayer-count" class="badge">0/5</span>
+                            </div>
+                            <div class="card-subtext" id="dash-next-prayer-banner">
+                                Calculating next prayer...
+                            </div>
+                            <button class="btn btn-secondary action-switch-tab" data-target="tab-prayers">Open Prayer Room →</button>
+                        </div>
+
+                        <!-- Academic Glance -->
+                        <div class="card glance-card">
+                            <div class="card-header">
+                                <span class="card-title">🎓 Urgent Tasks</span>
+                                <span id="dash-assign-count" class="badge">0 Active</span>
+                            </div>
+                            <div id="dash-urgent-task" class="card-subtext">
+                                No urgent assignments pending!
+                            </div>
+                            <button class="btn btn-secondary action-switch-tab" data-target="tab-academics">Manage Assignments →</button>
+                        </div>
+
+                        <!-- Nutrition Glance -->
+                        <div class="card glance-card">
+                            <div class="card-header">
+                                <span class="card-title">🥗 Nutrition & Fuel</span>
+                                <span id="dash-cal-pill" class="badge">0 kcal</span>
+                            </div>
+                            <div class="glance-metric-body">
+                                <div class="progress-info-row">
+                                    <span>Daily Calorie Target</span>
+                                    <span id="dash-cal-ratio">0 / 2200 kcal</span>
+                                </div>
+                                <div class="prog-bar-bg">
+                                    <div class="prog-bar-fill prog-bar-amber" id="dash-cal-fill" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary action-switch-tab" data-target="tab-nutrition">Log Meals & Water →</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 2: 5 DAILY PRAYERS MODULE                           -->
+                <!-- ======================================================== -->
+                <section id="tab-prayers" class="view-panel">
+                    <div class="card controls-card">
+                        <div class="location-controls">
+                            <div class="input-inline-group">
+                                <span class="loc-icon">📍</span>
+                                <input type="text" id="cfg-city" value="Karachi" maxlength="120" placeholder="City"
+                                    class="input-compact">
+                                <input type="text" id="cfg-country" value="Pakistan" maxlength="120"
+                                    placeholder="Country" class="input-compact">
+                                <button class="btn btn-emerald" id="btn-update-prayers">Update Times</button>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-gps">🎯 Use GPS</button>
+                        </div>
+                    </div>
+
+                    <div class="prayer-cards-grid" id="prayer-grid-container"></div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <span class="card-title">⚖️ Persistent Qadha Counter</span>
+                                <p class="section-desc">Keep track of past missed prayers and make them up over time.</p>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="btn-reset-qadha">Reset All</button>
+                        </div>
+                        <div class="qadha-grid" id="qadha-counters-container"></div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 3: UNIVERSITY ASSIGNMENTS                           -->
+                <!-- ======================================================== -->
+                <section id="tab-academics" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">➕ Add University Assignment</span>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="in-assign-title" maxlength="120"
+                                placeholder="Assignment Title (e.g., Database Project)" class="form-input flex-2">
+                            <input type="text" id="in-assign-course" maxlength="120"
+                                placeholder="Course Code (e.g., CS-301)" class="form-input flex-1">
+                            <input type="datetime-local" id="in-assign-date" class="form-input flex-1">
+                            <select id="in-assign-priority" class="form-select">
+                                <option value="High">High Priority</option>
+                                <option value="Medium" selected>Medium Priority</option>
+                                <option value="Low">Low Priority</option>
+                            </select>
+                            <button class="btn btn-emerald" id="btn-add-assignment">Save Task</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">📝 Active Deadlines & Tasks</span>
+                            <span id="assign-summary-count" class="badge">0 Tasks</span>
+                        </div>
+                        <div class="assignment-list" id="assignment-list-container"></div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 4: SELF-LEARNING & POMODORO                         -->
+                <!-- ======================================================== -->
+                <section id="tab-learning" class="view-panel">
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">⏱️ Deep-Work Focus Studio</span>
+                            </div>
+                            <div class="pomodoro-box">
+                                <span class="badge" id="pomo-mode-badge">FOCUS SESSION</span>
+                                <div class="timer-digits" id="pomo-display">25:00</div>
+                                <div class="button-group-center">
+                                    <button class="btn btn-emerald" id="btn-pomo-start">Start Timer</button>
+                                    <button class="btn btn-secondary" id="btn-pomo-pause">Pause</button>
+                                    <button class="btn btn-secondary" id="btn-pomo-reset">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">📖 Self-Learning & Book Progress</span>
+                            </div>
+                            <div class="form-row">
+                                <input type="text" id="in-book-title" maxlength="120"
+                                    placeholder="Skill/Book (e.g., Clean Architecture)" class="form-input flex-2">
+                                <input type="number" id="in-book-current" min="0" max="50000" placeholder="Current Pg"
+                                    class="form-input" style="width:110px;">
+                                <input type="number" id="in-book-total" min="1" max="50000" placeholder="Total Pg"
+                                    class="form-input" style="width:110px;">
+                                <button class="btn btn-emerald" id="btn-add-book">Add</button>
+                            </div>
+                            <div id="learning-items-container" class="stack-list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 5: GYM & PROGRESSIVE OVERLOAD                       -->
+                <!-- ======================================================== -->
+                <section id="tab-gym" class="view-panel">
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">🏋️ Log Gym Set</span>
+                                <select id="cfg-workout-split" class="form-select">
+                                    <option value="Push">Push Day (Chest/Shoulders/Triceps)</option>
+                                    <option value="Pull">Pull Day (Back/Biceps)</option>
+                                    <option value="Legs">Legs Day (Quads/Hamstrings/Calves)</option>
+                                    <option value="Upper">Upper Body</option>
+                                    <option value="Lower">Lower Body</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <input type="text" id="in-gym-exercise" maxlength="120"
+                                    placeholder="Exercise (e.g., Bench Press)" class="form-input flex-2">
+                                <input type="number" id="in-gym-weight" min="0" max="500" step="0.5"
+                                    placeholder="Weight (kg)" class="form-input flex-1">
+                                <input type="number" id="in-gym-reps" min="1" max="200" placeholder="Reps"
+                                    class="form-input flex-1">
+                                <button class="btn btn-emerald" id="btn-log-gym-set">Log Set</button>
+                            </div>
+                            <div id="gym-overload-tip" class="tip-box">
+                                💡 Enter an exercise above to see what you lifted in your previous session!
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">⏳ In-Set Rest Stopwatch</span>
+                            </div>
+                            <div class="rest-timer-box">
+                                <div class="rest-timer-digits" id="rest-timer-display">01:30</div>
+                                <div class="button-group-center">
+                                    <button class="btn btn-secondary btn-rest-preset" data-seconds="60">60s</button>
+                                    <button class="btn btn-secondary btn-rest-preset" data-seconds="90">90s</button>
+                                    <button class="btn btn-secondary btn-rest-preset" data-seconds="120">120s</button>
+                                    <button class="btn btn-danger" id="btn-rest-stop">Stop</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">📊 Today's Workout Sets</span>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Exercise</th>
+                                        <th>Weight</th>
+                                        <th>Reps</th>
+                                        <th>Volume</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gym-log-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 6: NUTRITION & CALORIES                             -->
+                <!-- ======================================================== -->
+                <section id="tab-nutrition" class="view-panel">
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">🍽️ Calorie & Macro Target</span>
+                            </div>
+                            <div class="macro-stats-row">
+                                <div>
+                                    <div class="big-metric" id="nutri-cals-consumed">0</div>
+                                    <div class="metric-sub">of <span id="nutri-cals-target">2,200</span> kcal consumed</div>
+                                </div>
+                                <div>
+                                    <div class="big-metric metric-emerald" id="nutri-protein-val">0g</div>
+                                    <div class="metric-sub">Protein Goal (140g)</div>
+                                </div>
+                            </div>
+                            <div class="prog-bar-bg" style="height:12px;">
+                                <div class="prog-bar-fill prog-bar-amber" id="nutri-macro-bar" style="width:0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="card-title">💧 Hydration Tracker</span>
+                                <span id="water-count-text" class="badge">0 / 8 Glasses (2.0L)</span>
+                            </div>
+                            <p class="section-desc">Click a glass to toggle hydration (250ml each):</p>
+                            <div class="water-bubbles" id="water-bubbles-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">🥗 Log Meal</span>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="in-meal-name" maxlength="120"
+                                placeholder="Meal Name (e.g., 3 Eggs + Oatmeal)" class="form-input flex-2">
+                            <select id="in-meal-type" class="form-select">
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Snack">Snack / Shake</option>
+                            </select>
+                            <input type="number" id="in-meal-cals" min="0" max="10000" placeholder="Calories"
+                                class="form-input" style="width:110px;">
+                            <input type="number" id="in-meal-protein" min="0" max="1000" placeholder="Protein (g)"
+                                class="form-input" style="width:110px;">
+                            <button class="btn btn-emerald" id="btn-add-meal">Log Meal</button>
+                        </div>
+                        <div id="meals-list-container" class="stack-list"></div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 7: DAILY HABITS & ROUTINE                           -->
+                <!-- ======================================================== -->
+                <section id="tab-tasks" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">✅ Daily Discipline Checklist</span>
+                            <span id="tasks-progress-pill" class="badge">0/0 Done</span>
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="in-new-task" maxlength="120"
+                                placeholder="Add custom habit (e.g., Cold shower, Read 10 mins...)"
+                                class="form-input flex-1">
+                            <button class="btn btn-emerald" id="btn-add-task">Add Habit</button>
+                        </div>
+                        <div id="task-list-container" class="stack-list" style="margin-top:10px;"></div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 8: PRIVATE ENCRYPTED VAULT (WEB CRYPTO AES-GCM)     -->
+                <!-- ======================================================== -->
+                <section id="tab-vault" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <span class="card-title">🔐 Private Reflection Vault</span>
+                                <p class="section-desc">Zero-knowledge client-side encryption using Native Web Crypto API (AES-GCM 256-bit). Stored securely in your browser.</p>
+                            </div>
+                            <span id="vault-status-badge" class="badge">Not Initialized</span>
+                        </div>
+
+                        <!-- Vault Locked Notice / Setup -->
+                        <div id="vault-setup-container" class="vault-panel-box">
+                            <h3 style="font-size:1.1rem; margin-bottom:8px;">Set Up Your 4-Digit Security PIN</h3>
+                            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:14px;">
+                                Choose a 4-digit PIN to lock your personal journal notes and app screen. Your PIN derives an AES-GCM cryptographic key directly in your browser.
+                            </p>
+                            <div class="form-row" style="max-width:400px;">
+                                <input type="password" id="in-vault-pin-setup" maxlength="4" pattern="[0-9]{4}"
+                                    inputmode="numeric" placeholder="Enter 4 digits" class="form-input" style="font-size:1.2rem; letter-spacing:4px; text-align:center;">
+                                <button class="btn btn-emerald" id="btn-vault-setup-save">Set PIN</button>
+                            </div>
+                        </div>
+
+                        <!-- Vault Unlocked Content -->
+                        <div id="vault-content-container" class="vault-panel-box" style="display:none;">
+                            <div class="form-row" style="margin-bottom:14px;">
+                                <textarea id="in-vault-note-text" maxlength="2000" rows="3"
+                                    placeholder="Write a private reflection, sensitive goal, or confidential note..."
+                                    class="form-input flex-1"></textarea>
+                                <button class="btn btn-emerald" id="btn-vault-save-note" style="align-self:flex-end;">🔒 Encrypt & Save</button>
+                            </div>
+                            <div class="card-header" style="padding-top:10px;">
+                                <span class="card-title" style="font-size:1rem;">🗄️ Decrypted Personal Notes</span>
+                                <button class="btn btn-secondary btn-sm" id="btn-vault-lock-now">🔒 Lock Vault</button>
+                            </div>
+                            <div id="vault-notes-list" class="stack-list" style="margin-top:10px;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ======================================================== -->
+                <!-- VIEW 9: BACKUP, RESTORE & PRIVACY                        -->
+                <!-- ======================================================== -->
+                <section id="tab-backup" class="view-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">💾 Local Data Privacy & Schema Hardening</span>
+                        </div>
+                        <p class="backup-description">
+                            <strong>Saad Life Tracker</strong> is designed with strict local privacy. All prayers, workout sets, university deadlines, and nutrition metrics remain in your browser's LocalStorage. All imports are guarded against prototype pollution and malicious payload injection.
+                        </p>
+                        <div class="backup-actions">
+                            <button class="btn btn-emerald" id="btn-export-json">💾 Download Full Backup (JSON)</button>
+                            <label class="btn btn-secondary" style="cursor:pointer;">
+                                📥 Restore Backup File
+                                <input type="file" id="in-import-file" accept=".json" style="display:none;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Client-Side Data Purge / Security Hardening -->
+                    <div class="card card-danger-zone">
+                        <div class="card-header">
+                            <span class="card-title" style="color:var(--accent-rose);">⚠️ Data Purge & Factory Reset</span>
+                        </div>
+                        <p class="backup-description">
+                            Securely wipe all local storage keys, cached prayer data, exercise logs, and cryptographic keys from this device. This cannot be undone.
+                        </p>
+                        <div class="backup-actions">
+                            <button class="btn btn-danger" id="btn-trigger-purge">🗑️ Wipe All Local Data</button>
+                            <button class="btn btn-secondary" id="btn-remove-pin" style="display:none;">🔓 Remove PIN Protection</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PIN ENTRY MODAL (SCREEN LOCK / VAULT UNLOCK)                 -->
+    <!-- ============================================================ -->
+    <div class="modal-overlay" id="pin-modal" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-icon">🔒</div>
+            <h3 class="modal-title" id="pin-modal-title">App Locked</h3>
+            <p class="modal-subtitle" id="pin-modal-desc">Enter your 4-digit PIN to access Saad Life Tracker</p>
+
+            <div class="pin-display-row">
+                <div class="pin-dot" id="pdot-1"></div>
+                <div class="pin-dot" id="pdot-2"></div>
+                <div class="pin-dot" id="pdot-3"></div>
+                <div class="pin-dot" id="pdot-4"></div>
+            </div>
+
+            <!-- Onscreen keypad for mobile & touch friendliness -->
+            <div class="pin-keypad">
+                <button class="pin-key" data-digit="1">1</button>
+                <button class="pin-key" data-digit="2">2</button>
+                <button class="pin-key" data-digit="3">3</button>
+                <button class="pin-key" data-digit="4">4</button>
+                <button class="pin-key" data-digit="5">5</button>
+                <button class="pin-key" data-digit="6">6</button>
+                <button class="pin-key" data-digit="7">7</button>
+                <button class="pin-key" data-digit="8">8</button>
+                <button class="pin-key" data-digit="9">9</button>
+                <button class="pin-key pin-key-clear" id="btn-pin-clear">C</button>
+                <button class="pin-key" data-digit="0">0</button>
+                <button class="pin-key pin-key-del" id="btn-pin-del">⌫</button>
+            </div>
+            <div id="pin-error-text" class="pin-error-msg"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PURGE CONFIRMATION MODAL                                     -->
+    <!-- ============================================================ -->
+    <div class="modal-overlay" id="purge-modal" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-icon modal-icon-danger">⚠️</div>
+            <h3 class="modal-title">Confirm Factory Reset</h3>
+            <p class="modal-subtitle">
+                This will permanently delete all logs, streaks, prayer records, and encrypted notes. Type <strong>RESET</strong> below to confirm.
+            </p>
+            <input type="text" id="in-purge-confirm-text" placeholder="Type RESET" class="form-input"
+                style="text-align:center; margin-bottom:14px; font-weight:700;">
+            <div class="button-group-center">
+                <button class="btn btn-secondary" id="btn-purge-cancel">Cancel</button>
+                <button class="btn btn-danger" id="btn-purge-confirm">Permanently Wipe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Hardened JavaScript Engine -->
+    <script src="app.js"></script>
+</body>
+
+</html>
