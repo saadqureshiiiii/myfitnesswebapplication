@@ -32,7 +32,7 @@ aws-ec2-cicd-project/
 ├── style.css
 ├── script.js
 ├── appspec.yml
-└── README.md
+└─ README.md
 ```
 
 The application files provide the dashboard interface and client-side functionality. The `appspec.yml` file defines the deployment instructions used by AWS CodeDeploy.
